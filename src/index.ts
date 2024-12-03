@@ -14,13 +14,38 @@ import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { Keypair } from "@solana/web3.js";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 
-// Function to switch to SOON Devnet and register required programs
-export async function umiSwitchToSoonDevnet(umi: Umi) {
+// Function to switch to SOON and register required programs
+export async function umiSwitchToSoon(umi: Umi) {
   // Register Token Metadata Program
+
+  // Devnet program ids
+  const mplTokenMetadata = publicKey(
+    "6C4GR9AtMGF25sjXKtdB7A6NVQUudEQWw97kG61pGuA1"
+  );
+  const mplCandyMachineCore = publicKey(
+    "GFmqavo1M8wEL3a4uouSCaDX5CJapcYWXTcZ4TK6L9ad"
+  );
+  const mplcandyGuard = publicKey(
+    "3g5Pe9ZoDmhA4k1ooFhxgtMWNesTYRdrSAKWMfjr2YxH"
+  );
+
+  // Testnet program ids
+  const mplCandyMachineCoreTestnet = publicKey(
+    "2g5gta4shjCtCmMA6mzJ2wbj2P9QtPQuY27gK7z3pv5j"
+  );
+
+  const mplCandyGuardTestnet = publicKey(
+    "FFwcwSGPurGpQsu41wXFVZpgmWJgoZbpqcLF84eKNeM1"
+  );
+
+  const mplTokenMetadataTestnet = publicKey(
+    "6C4GR9AtMGF25sjXKtdB7A6NVQUudEQWw97kG61pGuA1"
+  );
+
   umi.programs.add(
     {
       name: "mplTokenMetadata",
-      publicKey: publicKey("6C4GR9AtMGF25sjXKtdB7A6NVQUudEQWw97kG61pGuA1"),
+      publicKey: mplTokenMetadataTestnet,
       getErrorFromCode: (code: number, cause?: Error) => null,
       getErrorFromName: (name: string, cause?: Error) => null,
       isOnCluster: (cluster: Cluster) => true,
@@ -32,7 +57,7 @@ export async function umiSwitchToSoonDevnet(umi: Umi) {
   umi.programs.add(
     {
       name: "mplCandyMachineCore",
-      publicKey: publicKey("GFmqavo1M8wEL3a4uouSCaDX5CJapcYWXTcZ4TK6L9ad"),
+      publicKey: mplCandyMachineCoreTestnet,
       getErrorFromCode: (code: number, cause?: Error) => null,
       getErrorFromName: (name: string, cause?: Error) => null,
       isOnCluster: (cluster: Cluster) => true,
@@ -44,7 +69,7 @@ export async function umiSwitchToSoonDevnet(umi: Umi) {
   umi.programs.add(
     {
       name: "mplCandyMachine",
-      publicKey: publicKey("GFmqavo1M8wEL3a4uouSCaDX5CJapcYWXTcZ4TK6L9ad"),
+      publicKey: mplCandyMachineCoreTestnet,
       getErrorFromCode: (code: number, cause?: Error) => null,
       getErrorFromName: (name: string, cause?: Error) => null,
       isOnCluster: (cluster: Cluster) => true,
@@ -55,7 +80,7 @@ export async function umiSwitchToSoonDevnet(umi: Umi) {
   (umi.programs as any).add(
     {
       name: "mplCandyGuard",
-      publicKey: publicKey("3g5Pe9ZoDmhA4k1ooFhxgtMWNesTYRdrSAKWMfjr2YxH"),
+      publicKey: mplCandyGuardTestnet,
       getErrorFromCode: (code: number, cause?: Error) => null,
       getErrorFromName: (name: string, cause?: Error) => null,
       isOnCluster: (cluster: Cluster) => true,
@@ -88,7 +113,8 @@ export async function umiSwitchToSoonDevnet(umi: Umi) {
   );
 }
 // Set up the Umi instance
-const umi = createUmi("https://rpc.devnet.soo.network/rpc").use(
+//change this to devnet/testnet accordingly
+const umi = createUmi("https://rpc.testnet.soo.network/rpc").use(
   mplTokenMetadata()
 );
 
@@ -113,8 +139,8 @@ const mint = generateSigner(umi);
 
 // Main function to create a fungible token
 async function main() {
-  // Switch Umi instance to SOON Devnet by adding necessary programs
-  await umiSwitchToSoonDevnet(umi);
+  // Switch Umi instance to SOON Devnet/Testnet by adding necessary programs
+  await umiSwitchToSoon(umi);
 
   // Create the fungible token (e.g., BONK)
   const txResponse = await createFungible(umi, {
@@ -126,6 +152,7 @@ async function main() {
   }).sendAndConfirm(umi);
 
   const txHash = base58.deserialize(txResponse.signature);
+  console.log("newly created mint:", mint.publicKey);
   console.log("Transaction hash:", txHash);
 }
 
