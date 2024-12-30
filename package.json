@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
+    "nft": "tsx src/nft.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "base58": "^2.0.1",
+    "pinata": "^1.10.1",
+    "pinata-web3": "^0.5.4",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
